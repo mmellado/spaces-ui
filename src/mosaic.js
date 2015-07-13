@@ -159,8 +159,14 @@ var Mosaic = (function(config) {
   };
 
   var _keyNavigation = function() {
-    var evt = arguments[0];
-    _moveToBoundingSlide(evt.keyIdentifier.toLowerCase());
+    var evt = arguments[0],
+        direction = evt.keyCode;
+        // r-39, d-40, l-37, u-38
+        direction = (direction > 38) ? ((direction == 39) ? 'right' : 'down' ): ((direction == 37) ? 'left' : 'up');
+
+        console.log(direction)
+
+    _moveToBoundingSlide(direction);
   };
 
   // Handle touch gestures: http://www.javascriptkit.com/javatutors/touchevents2.shtml
