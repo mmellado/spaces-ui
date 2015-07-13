@@ -53,15 +53,15 @@
 
 <script src="../src/spaces-ui.js"></script>
 <script>
-  Mosaic.init({showMap: true});
-  document.getElementById('OMG').addEventListener('click', function(){ Mosaic.moveTo('#omg-home') });
-  document.getElementById('WTF').addEventListener('click', function(){ Mosaic.moveTo('#wtf-home') });
-  document.getElementById('BBQ').addEventListener('click', function(){ Mosaic.moveTo('#bbq-home') });
-  document.getElementById('LOL').addEventListener('click', function(){ Mosaic.moveTo('#lol-home') });
-  document.querySelector('.up').addEventListener('click', function(){ Mosaic.move('up') });
-  document.querySelector('.down').addEventListener('click', function(){ Mosaic.move('down') });
-  document.querySelector('.left').addEventListener('click', function(){ Mosaic.move('left') });
-  document.querySelector('.right').addEventListener('click', function(){ Mosaic.move('right') });
+  Spaces.init({showMap: true});
+  document.getElementById('OMG').addEventListener('click', function(){ Spaces.moveTo('#omg-home') });
+  document.getElementById('WTF').addEventListener('click', function(){ Spaces.moveTo('#wtf-home') });
+  document.getElementById('BBQ').addEventListener('click', function(){ Spaces.moveTo('#bbq-home') });
+  document.getElementById('LOL').addEventListener('click', function(){ Spaces.moveTo('#lol-home') });
+  document.querySelector('.up').addEventListener('click', function(){ Spaces.move('up') });
+  document.querySelector('.down').addEventListener('click', function(){ Spaces.move('down') });
+  document.querySelector('.left').addEventListener('click', function(){ Spaces.move('left') });
+  document.querySelector('.right').addEventListener('click', function(){ Spaces.move('right') });
 </script>
 
 
