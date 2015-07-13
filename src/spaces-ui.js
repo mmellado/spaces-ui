@@ -1,6 +1,3 @@
-// TODO: innvalidSpace API
-// TODO: Go top on horizontal
-// TODO: Add focus to pane when it appears on screen
 // TODO: unit tests
 // Document
 
@@ -37,6 +34,7 @@ var Spaces = (function(config) {
     if (activeSpace) activeSpace.removeAttribute('data-active');
 
     newActiveSpace.dataset.active = '';
+    newActiveSpace.focus();
 
     _wrapper.style.left = -x * _spaceWidth + 'px';
     _wrapper.style.top = -y * _spaceHeight + 'px';
@@ -115,6 +113,7 @@ var Spaces = (function(config) {
         row.style.width = _spaceWidth + 'px';
         row.style.height = _spaceHeight + 'px';
         row.style.top = j * _spaceHeight + 'px';
+        row.tabIndex = -1;
 
         row.dataset.x = i;
         row.dataset.y = j;
