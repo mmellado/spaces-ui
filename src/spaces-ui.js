@@ -1,5 +1,5 @@
 // TODO: unit tests
-// TODO: grunt build
+// TODO: grunt jshint, tests, license banner,
 // TODO: Write README docs
 
 /**
