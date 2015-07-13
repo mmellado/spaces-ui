@@ -35,7 +35,7 @@
     <ul data-column>
       <li id="wtf-home">WTF 1 <button class="down">DOWN</button> <button class="left">LEFT</button></li>
       <li>WTF 2 <button class="up">UP</button></li>
-      <li>WTF 3</li>
+      <li>WTF 3 <button class="top">TOP</button></li>
     </ul>
 
     <ul data-column>
@@ -62,6 +62,7 @@
   document.querySelector('.down').addEventListener('click', function(){ Spaces.move('down') });
   document.querySelector('.left').addEventListener('click', function(){ Spaces.move('left') });
   document.querySelector('.right').addEventListener('click', function(){ Spaces.move('right') });
+  document.querySelector('.top').addEventListener('click', function(){ Spaces.move('top') });
 </script>
 
 

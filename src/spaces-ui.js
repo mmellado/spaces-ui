@@ -1,8 +1,7 @@
 // TODO: innvalidSpace API
 // TODO: Go top on horizontal
 // TODO: Add focus to pane when it appears on screen
-// TODO: add click navigation to map
-// TODO: scroll to top
+// TODO: unit tests
 // Document
 
 
@@ -48,7 +47,7 @@ var Spaces = (function(config) {
       map.removeAttribute('data-mapactive');
 
       mapActive = document.querySelector('[data-mapx="' + x + '"][data-mapy="' + y + '"]');
-      mapActive.style.background = '#000';
+      mapActive.style.background = 'rgba(0, 0, 0, 0.5)';
       mapActive.dataset.mapactive = '';
     }
   };
@@ -126,37 +125,6 @@ var Spaces = (function(config) {
     }
   };
 
-  var _debounce = function(func, wait, evt) {
-     if (timeout) {
-      return false;
-    }
-    clearTimeout(timeout);
-    timeout = setTimeout(function(){
-      func.apply(this, [evt]);
-      timeout = null;
-    }, wait);
-  };
-
-  var _debouncedScroll = function() {
-    var evt = arguments[0];
-    _debounce(_detectDirection, 300, evt);
-  };
-
-  var _detectDirection = function() {
-    var evt = arguments[0];
-    var wDelta = (evt.wheelDeltaX !== 0) ? 'horizontal' : 'vertical';
-    var direction;
-
-
-    if (wDelta == 'horizontal') {
-      direction = (evt.wheelDeltaX < 0) ? 'right' : 'left';
-    } else {
-      direction = (evt.wheelDeltaY < 0) ? 'down' : 'up';
-    }
-
-    _moveToBoundingSpace(direction);
-  };
-
   var _keyNavigation = function() {
     var evt = arguments[0],
         direction = evt.keyCode;
@@ -208,15 +176,6 @@ var Spaces = (function(config) {
     }, false);
   };
 
-  var _initEvents = function() {
-    //window.addEventListener('mousewheel', _debouncedScroll);
-    window.addEventListener('keydown', _keyNavigation);
-    window.addEventListener('resize', _resetLayout);
-    _swipedetect(_wrapper, function(direction) {
-      _moveToBoundingSpace(direction);
-    });
-  };
-
   var _buildMap = function() {
     var unitWidth = 20;
     var unitHeigth = 10;
@@ -226,6 +185,7 @@ var Spaces = (function(config) {
     var li;
 
     mapWrapper.style.position = 'absolute';
+    mapWrapper.id = 'spaces-map';
 
     var columns = document.querySelectorAll(_columnSelector);
 
@@ -237,18 +197,19 @@ var Spaces = (function(config) {
       rows = columns[i].children;
 
       for (var j = 0; j < columns[i].children.length; j ++) {
-        li = document.createElement('div');
+        li = document.createElement('li');
         li.style.width = unitWidth + 'px';
         li.style.height = unitHeigth + 'px';
         li.style.position = 'absolute';
         li.style.top = j * unitHeigth + 2 + 'px';
         li.style.border = '1px solid #666';
+        li.style.cursor = 'pointer';
         li.dataset.mapx = i;
         li.dataset.mapy = j;
 
         if (i == start.dataset.x && j == start.dataset.y) {
           li.dataset.mapactive = '';
-          li.style.background = 'black';
+          li.style.background = 'rgba(0, 0, 0, 0.5)';
         }
         ul.appendChild(li);
       }
@@ -258,6 +219,30 @@ var Spaces = (function(config) {
     mapWrapper.style.right = unitWidth * columns.length + 20 + 'px';
 
     document.body.appendChild(mapWrapper);
+  };
+
+  var _mapEvents = function() {
+    var evt = arguments[0],
+        el = evt.target,
+        x = el.dataset.mapx,
+        y = el.dataset.mapy;
+
+    if (x && y) {
+      _moveToSpace(x, y);
+    }
+  }
+
+  var _initEvents = function() {
+    // Keyboard arrows navigation
+    window.addEventListener('keydown', _keyNavigation);
+    // Fix position on window resize
+    window.addEventListener('resize', _resetLayout);
+    // Touch gestures
+    _swipedetect(_wrapper, function(direction) {
+      _moveToBoundingSpace(direction);
+    });
+    // Map navigation
+    if (_showMap) document.getElementById('spaces-map').addEventListener('click', _mapEvents);
   };
 
   // Public API
@@ -278,8 +263,11 @@ var Spaces = (function(config) {
   };
 
   var _move = function(direction) {
-    var directions = ['up', 'down', 'left', 'right'];
-    if (directions.indexOf(direction) > -1) {
+    var directions = ['up', 'down', 'left', 'right'],
+        currentX = document.querySelector('[data-active]').dataset.x;
+    if (direction === 'top') {
+      _moveToSpace(currentX, 0);
+    }else if (directions.indexOf(direction) > -1) {
       _moveToBoundingSpace(direction);
     }
   };
