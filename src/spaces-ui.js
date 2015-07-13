@@ -1,9 +1,11 @@
 // TODO: unit tests
-// Document
+// TODO: grunt build
+// TODO: Write README docs
 
-
+/**
+ * Layout generator replicating OsX spaces for your website
+ */
 var Spaces = (function(config) {
-
   // Config Variables
   var _spaceWrapper,
       _columnSelector,
@@ -16,29 +18,95 @@ var Spaces = (function(config) {
       _spaceHeight,
       _timeout;
 
+  /**
+   * _setLayout
+   * Configures the layout adding the necessary properties and setting the necessary
+   * width and height for rows and columns. This funciton takes care of drawing the spaces.
+   */
+  var _setLayout = function() {
+    var columns = document.querySelectorAll(_columnSelector),
+        rows, col, row;
+
+        // Get window dimentions to set the size of each space
+        _spaceWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        _spaceHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+        // Set wrappers properties. Setting it's position to fixed to block scrolling
+        _wrapper.style.position = 'fixed';
+        _wrapper.style.top = 0;
+        _wrapper.style.left = 0;
+        _wrapper.style.transition = 'all 0.5s ease-in-out';
+
+    // Check for the number of columns
+    for (var i = 0; i < columns.length; i++ ) {
+      col = columns[i];
+
+      // Column properties so we can just move the wrapper around
+      col.style.position = 'absolute';
+      col.style.left = i * _spaceWidth + 'px';
+
+      rows = col.children;
+
+      // Check for the number of rows per column
+      for (var j = 0; j < rows.length; j ++) {
+        row = rows[j];
+
+        // Setting sixe for each space and making sure they are focusable for accessibility
+        row.style.width = _spaceWidth + 'px';
+        row.style.height = _spaceHeight + 'px';
+        row.style.top = j * _spaceHeight + 'px';
+        row.tabIndex = -1;
+
+        // Setting space coordinates
+        row.dataset.x = i;
+        row.dataset.y = j;
+      }
+    }
+  };
+
+  /**
+   * _setInitialSpace
+   * Checks what the desired initial space is and sets it as the active one
+   */
+  var _setInitialSpace = function() {
+    // Use config variable to figure out which space to enable
+    var space = document.querySelector(_initialSpace);
+    _moveToSpace(space.dataset.x, space.dataset.y);
+  };
+
+  /**
+   * _resetLayout
+   * Resets the layout to it's original state. Makes sure to recalculate
+   * viewport dimensions in case of resize.
+   */
   var _resetLayout = function() {
     _setLayout();
     _setInitialSpace();
   };
 
-  var _setInitialSpace = function() {
-    var space = document.querySelector(_initialSpace);
-    _moveToSpace(space.dataset.x, space.dataset.y);
-  };
-
+  /**
+   * _moveToSpace
+   * Sets a new space as active based on its coordinate.
+   * @param {number} x - The x coordinate for the new active space.
+   * @param {number} y - The y coordinate for the new active space.
+   */
   var _moveToSpace = function(x, y) {
     var activeSpace = document.querySelector('[data-active]'),
         newActiveSpace = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]'),
         map, mapActive;
 
+    // remove acrtive status of the currently visible one if available
     if (activeSpace) activeSpace.removeAttribute('data-active');
 
+    // Set the active status on the new space
     newActiveSpace.dataset.active = '';
     newActiveSpace.focus();
 
+    // Move the wrapper around to ensure the new active space is visible
     _wrapper.style.left = -x * _spaceWidth + 'px';
     _wrapper.style.top = -y * _spaceHeight + 'px';
 
+    // If showing map, updting the map as well
     if (_showMap) {
       map = document.querySelector('[data-mapactive]');
       map.style.background = 'transparent';
@@ -50,12 +118,19 @@ var Spaces = (function(config) {
     }
   };
 
+  /**
+   * _moveToBoundingSpace
+   * Sets a new space as active based on a direction from the current active space.
+   * @param {string} direction - Direction of the new active space.
+   *                             Can be set to up, down, left and right.
+   */
   var _moveToBoundingSpace = function(direction) {
     var currentSpace = document.querySelector('[data-active]'),
         posX = parseInt(currentSpace.dataset.x, 10),
         posY = parseInt(currentSpace.dataset.y, 10),
         newX, newY, newSpace;
 
+    // Get new coordinates based on desired direction
     switch(direction) {
       case 'up':
         newX = posX;
@@ -78,52 +153,81 @@ var Spaces = (function(config) {
       break;
     }
 
+    // Get the new space
     newSpace = document.querySelector('[data-x="' + newX + '"][data-y="' + newY + '"]');
 
+    // If the new space is a valid one, move to it.
     if (newSpace) {
       _moveToSpace(newX, newY);
     }
 
   };
 
-  var _setLayout = function() {
-    var columns = document.querySelectorAll(_columnSelector),
-        rows, col, row;
+  /**
+   * _buildMap
+   * Builds a minimap based on the valid spaces on the page.
+   */
+  var _buildMap = function() {
+    var unitWidth = 20,
+        unitHeigth = 10,
 
-        _spaceWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-        _spaceHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        // Create container for the minimap
+        mapWrapper = document.createElement('div'),
+        start = document.querySelector(_initialSpace),
+        rows, ul, li;
 
-        _wrapper.style.position = 'fixed';
-        _wrapper.style.top = 0;
-        _wrapper.style.left = 0;
-        _wrapper.style.transition = 'all 0.5s ease-in-out';
+    // Minimap's properties
+    mapWrapper.style.position = 'absolute';
+    mapWrapper.id = 'spaces-map';
 
+    var columns = document.querySelectorAll(_columnSelector);
 
-    for (var i = 0; i < columns.length; i++ ) {
-      col = columns[i];
+    for(var i = 0; i < columns.length; i++) {
+      // Creating columns and setting properties
+      ul = document.createElement('ul');
+      ul.style.position = 'relative';
+      ul.style.left = i * unitWidth + 2 + 'px';
 
-      col.style.position = 'absolute';
-      col.style.left = i * _spaceWidth + 'px';
+      rows = columns[i].children;
 
-      rows = col.children;
-
+      // Creating rows and adding properties.
       for (var j = 0; j < rows.length; j ++) {
-        row = rows[j];
+        li = document.createElement('li');
+        li.style.width = unitWidth + 'px';
+        li.style.height = unitHeigth + 'px';
+        li.style.position = 'absolute';
+        li.style.top = j * unitHeigth + 2 + 'px';
+        li.style.border = '1px solid #666';
+        li.style.cursor = 'pointer';
+        li.dataset.mapx = i;
+        li.dataset.mapy = j;
 
-        row.style.width = _spaceWidth + 'px';
-        row.style.height = _spaceHeight + 'px';
-        row.style.top = j * _spaceHeight + 'px';
-        row.tabIndex = -1;
+        // Marking the initial space as active
+        if (i == start.dataset.x && j == start.dataset.y) {
+          li.dataset.mapactive = '';
+          li.style.background = 'rgba(0, 0, 0, 0.5)';
+        }
 
-        row.dataset.x = i;
-        row.dataset.y = j;
-
-        // For demo
-        row.style.background = '#' + Math.floor(Math.random()*16777215).toString(16); // Setting the random color on your div element.
+        // Adding the row to the colum
+        ul.appendChild(li);
       }
+      // Adding the colum to the map
+      mapWrapper.appendChild(ul);
     }
+    // Figuring out the right location of the map based on its size
+    mapWrapper.style.bottom = unitHeigth * columns.length + 20 + 'px';
+    mapWrapper.style.right = unitWidth * columns.length + 20 + 'px';
+
+    // Adding the map to the body
+    document.body.appendChild(mapWrapper);
   };
 
+  // Event functions
+
+  /**
+   * _keyNavigation
+   * Defines the behavior to navigate using the keyboard arrows
+   */
   var _keyNavigation = function() {
     var evt = arguments[0],
         direction = evt.keyCode;
@@ -133,7 +237,13 @@ var Spaces = (function(config) {
     _moveToBoundingSpace(direction);
   };
 
-  // Handle touch gestures: http://www.javascriptkit.com/javatutors/touchevents2.shtml
+  /**
+   * _swipedetect
+   * Enables touch gesture detection. Built based on the code found at
+   * http://www.javascriptkit.com/javatutors/touchevents2.shtml
+   * @param {DOMElement} el - The element to detect the swipe on.
+   * @param {Function} callback - Callback to execute code based on the swipe behavior.
+   */
    _swipedetect = function(el, callback){
 
     var touchsurface = el,
@@ -175,51 +285,10 @@ var Spaces = (function(config) {
     }, false);
   };
 
-  var _buildMap = function() {
-    var unitWidth = 20;
-    var unitHeigth = 10;
-    var mapWrapper = document.createElement('div');
-    var start = document.querySelector(_initialSpace);
-    var ul;
-    var li;
-
-    mapWrapper.style.position = 'absolute';
-    mapWrapper.id = 'spaces-map';
-
-    var columns = document.querySelectorAll(_columnSelector);
-
-    for(var i = 0; i < columns.length; i++) {
-      ul = document.createElement('ul');
-      ul.style.position = 'relative';
-      ul.style.left = i * unitWidth + 2 + 'px';
-
-      rows = columns[i].children;
-
-      for (var j = 0; j < columns[i].children.length; j ++) {
-        li = document.createElement('li');
-        li.style.width = unitWidth + 'px';
-        li.style.height = unitHeigth + 'px';
-        li.style.position = 'absolute';
-        li.style.top = j * unitHeigth + 2 + 'px';
-        li.style.border = '1px solid #666';
-        li.style.cursor = 'pointer';
-        li.dataset.mapx = i;
-        li.dataset.mapy = j;
-
-        if (i == start.dataset.x && j == start.dataset.y) {
-          li.dataset.mapactive = '';
-          li.style.background = 'rgba(0, 0, 0, 0.5)';
-        }
-        ul.appendChild(li);
-      }
-      mapWrapper.appendChild(ul);
-    }
-    mapWrapper.style.bottom = unitHeigth * columns.length + 20 + 'px';
-    mapWrapper.style.right = unitWidth * columns.length + 20 + 'px';
-
-    document.body.appendChild(mapWrapper);
-  };
-
+  /**
+   * _mapEvents
+   * Handles events needed for navigating using the map (on click)
+   */
   var _mapEvents = function() {
     var evt = arguments[0],
         el = evt.target,
@@ -231,6 +300,10 @@ var Spaces = (function(config) {
     }
   }
 
+  /**
+   * _initEvents
+   * Initializes all event handlers
+   */
   var _initEvents = function() {
     // Keyboard arrows navigation
     window.addEventListener('keydown', _keyNavigation);
@@ -246,6 +319,16 @@ var Spaces = (function(config) {
 
   // Public API
 
+  /**
+   * _init
+   * Creates an instance of Spaces ui.
+   * @constructor
+   * @param {Object} config - Config object with details on the desired behavior for the framework.
+   * @param {string} config.spaceWrapper - CSS selector for the spaces wrapper. Defaults to #spaces.
+   * @param {string} config.columnSelector - CSS selector for columns. Defaults to elements having the data-column attribute.
+   * @param {string} config.initialSpace - CSS selector for the initial space Defaults to the top left space.
+   * @param {Boolean} config.showMap - Enables the display of a minimap. Defaults to false.
+   */
   var _init = function(config) {
     var c = config || {},
 
@@ -261,6 +344,16 @@ var Spaces = (function(config) {
     _initEvents();
   };
 
+  /**
+   * _move
+   * Allows user to move to a space based on a direction.
+   * @param {string} direction - Direction to move to relative to the current active space.
+   *                             up - Moves to the space above if available.
+   *                             down - Moves to the space below if available.
+   *                             left - Moves to the space to the left if available.
+   *                             right - Moves to the space to the rifght if available.
+   *                             top - Moves to the first space in the active column.
+   */
   var _move = function(direction) {
     var directions = ['up', 'down', 'left', 'right'],
         currentX = document.querySelector('[data-active]').dataset.x;
@@ -271,18 +364,26 @@ var Spaces = (function(config) {
     }
   };
 
+  /**
+   * _moveTo
+   * Allows user to move to a space based on a css Selector
+   * @param {string} element - CSS selector for the desired space.
+   */
   var _moveTo = function(element) {
     var el = document.querySelector(element),
-        elX = el.dataset.x,
-        elY = el.dataset.y;
+        elX, elY;
 
-    _moveToSpace(elX, elY);
+    if (el) {
+      elX = el.dataset.x;
+      elY = el.dataset.y;
+      if (elX && elY)  _moveToSpace(elX, elY);
+    }
   };
 
+  // Exposing public API
   return {
     init: _init,
     move: _move,
     moveTo: _moveTo
   };
-
 })();

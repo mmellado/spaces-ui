@@ -54,6 +54,10 @@
 <script src="../src/spaces-ui.js"></script>
 <script>
   Spaces.init({showMap: true});
+  var mySpaces = document.querySelectorAll('#spaces ul li');
+  for (var i = 0; i < mySpaces.length; i++) {
+    mySpaces[i].style.background = '#' + Math.floor(Math.random()*16777215).toString(16); // Setting the random color on your div element.
+  }
   document.getElementById('OMG').addEventListener('click', function(){ Spaces.moveTo('#omg-home') });
   document.getElementById('WTF').addEventListener('click', function(){ Spaces.moveTo('#wtf-home') });
   document.getElementById('BBQ').addEventListener('click', function(){ Spaces.moveTo('#bbq-home') });
