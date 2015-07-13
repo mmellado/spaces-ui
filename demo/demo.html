@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <title>Slide Layout Demo</title>
+
+  <!-- for mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+
+<body>
+  <nav>
+    <ul>
+      <li><button id="OMG">OMG</button></li>
+      <li><button id="WTF">WTF</button></li>
+      <li><button id="BBQ">BBQ</button></li>
+      <li><button id="LOL">LOL</button></li>
+    </ul>
+  </nav>
+  <div id="wrapper">
+    <ul data-column>
+      <li id="omg-home">OMG 1 <a href="#" class="right">RIGHT</a></li>
+      <li>OMG 2</li>
+    </ul>
+
+    <ul data-column>
+      <li id="wtf-home">WTF 1 <button class="down">DOWN</button> <button class="left">LEFT</button></li>
+      <li>WTF 2 <button class="up">UP</button></li>
+      <li>WTF 3</li>
+    </ul>
+
+    <ul data-column>
+      <li id="bbq-home">BBQ 1</li>
+      <li>BBQ 2</li>
+      <li>BBQ 3</li>
+    </ul>
+
+    <ul data-column>
+      <li id="lol-home">LOL 1</li>
+      <li>LOL 2</li>
+      <li>LOL 3</li>
+    </ul>
+  </div>
+
+<script src="../src/mosaic.js"></script>
+<script>
+  Mosaic.init({showMap: true});
+  document.getElementById('OMG').addEventListener('click', function(){ Mosaic.moveTo('#omg-home') });
+  document.getElementById('WTF').addEventListener('click', function(){ Mosaic.moveTo('#wtf-home') });
+  document.getElementById('BBQ').addEventListener('click', function(){ Mosaic.moveTo('#bbq-home') });
+  document.getElementById('LOL').addEventListener('click', function(){ Mosaic.moveTo('#lol-home') });
+  document.querySelector('.up').addEventListener('click', function(){ Mosaic.move('up') });
+  document.querySelector('.down').addEventListener('click', function(){ Mosaic.move('down') });
+  document.querySelector('.left').addEventListener('click', function(){ Mosaic.move('left') });
+  document.querySelector('.right').addEventListener('click', function(){ Mosaic.move('right') });
+</script>
+
+
+</body>
+
+</html>
