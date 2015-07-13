@@ -1,5 +1,6 @@
 // TODO: innvalidSlide API
 // Go top on horizontal
+// Add focus to pane when it appears on screen
 // Document
 
 
@@ -161,11 +162,9 @@ var Mosaic = (function(config) {
   var _keyNavigation = function() {
     var evt = arguments[0],
         direction = evt.keyCode;
-        // r-39, d-40, l-37, u-38
-        direction = (direction > 38) ? ((direction == 39) ? 'right' : 'down' ): ((direction == 37) ? 'left' : 'up');
 
-        console.log(direction)
-
+    // r-39, d-40, l-37, u-38
+    direction = (direction > 38) ? ((direction == 39) ? 'right' : 'down' ): ((direction == 37) ? 'left' : 'up');
     _moveToBoundingSlide(direction);
   };
 
