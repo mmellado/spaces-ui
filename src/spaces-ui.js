@@ -1,4 +1,4 @@
-// TODO: innvalidTile API
+// TODO: innvalidSpace API
 // TODO: Go top on horizontal
 // TODO: Add focus to pane when it appears on screen
 // TODO: add click navigation to map
@@ -6,41 +6,41 @@
 // Document
 
 
-var Mosaic = (function(config) {
+var Spaces = (function(config) {
 
   // Config Variables
-  var _tileWrapper,
+  var _spaceWrapper,
       _columnSelector,
-      _initialTile,
+      _initialSpace,
       _showMap,
       _wrapper,
 
   // Necessary placeholder variables
-      _tileWidth,
-      _tileHeight,
+      _spaceWidth,
+      _spaceHeight,
       _timeout;
 
   var _resetLayout = function() {
     _setLayout();
-    _setInitialTile();
+    _setInitialSpace();
   };
 
-  var _setInitialTile = function() {
-    var tile = document.querySelector(_initialTile);
-    _moveToTile(tile.dataset.x, tile.dataset.y);
+  var _setInitialSpace = function() {
+    var space = document.querySelector(_initialSpace);
+    _moveToSpace(space.dataset.x, space.dataset.y);
   };
 
-  var _moveToTile = function(x, y) {
-    var activeTile = document.querySelector('[data-active]'),
-        newActiveTile = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]'),
+  var _moveToSpace = function(x, y) {
+    var activeSpace = document.querySelector('[data-active]'),
+        newActiveSpace = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]'),
         map, mapActive;
 
-    if (activeTile) activeTile.removeAttribute('data-active');
+    if (activeSpace) activeSpace.removeAttribute('data-active');
 
-    newActiveTile.dataset.active = '';
+    newActiveSpace.dataset.active = '';
 
-    _wrapper.style.left = -x * _tileWidth + 'px';
-    _wrapper.style.top = -y * _tileHeight + 'px';
+    _wrapper.style.left = -x * _spaceWidth + 'px';
+    _wrapper.style.top = -y * _spaceHeight + 'px';
 
     if (_showMap) {
       map = document.querySelector('[data-mapactive]');
@@ -53,11 +53,11 @@ var Mosaic = (function(config) {
     }
   };
 
-  var _moveToBoundingTile = function(direction) {
-    var currentTile = document.querySelector('[data-active]'),
-        posX = parseInt(currentTile.dataset.x, 10),
-        posY = parseInt(currentTile.dataset.y, 10),
-        newX, newY, newTile;
+  var _moveToBoundingSpace = function(direction) {
+    var currentSpace = document.querySelector('[data-active]'),
+        posX = parseInt(currentSpace.dataset.x, 10),
+        posY = parseInt(currentSpace.dataset.y, 10),
+        newX, newY, newSpace;
 
     switch(direction) {
       case 'up':
@@ -81,10 +81,10 @@ var Mosaic = (function(config) {
       break;
     }
 
-    newTile = document.querySelector('[data-x="' + newX + '"][data-y="' + newY + '"]');
+    newSpace = document.querySelector('[data-x="' + newX + '"][data-y="' + newY + '"]');
 
-    if (newTile) {
-      _moveToTile(newX, newY);
+    if (newSpace) {
+      _moveToSpace(newX, newY);
     }
 
   };
@@ -93,8 +93,8 @@ var Mosaic = (function(config) {
     var columns = document.querySelectorAll(_columnSelector),
         rows, col, row;
 
-        _tileWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-        _tileHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        _spaceWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        _spaceHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
         _wrapper.style.position = 'fixed';
         _wrapper.style.top = 0;
@@ -106,16 +106,16 @@ var Mosaic = (function(config) {
       col = columns[i];
 
       col.style.position = 'absolute';
-      col.style.left = i * _tileWidth + 'px';
+      col.style.left = i * _spaceWidth + 'px';
 
       rows = col.children;
 
       for (var j = 0; j < rows.length; j ++) {
         row = rows[j];
 
-        row.style.width = _tileWidth + 'px';
-        row.style.height = _tileHeight + 'px';
-        row.style.top = j * _tileHeight + 'px';
+        row.style.width = _spaceWidth + 'px';
+        row.style.height = _spaceHeight + 'px';
+        row.style.top = j * _spaceHeight + 'px';
 
         row.dataset.x = i;
         row.dataset.y = j;
@@ -154,7 +154,7 @@ var Mosaic = (function(config) {
       direction = (evt.wheelDeltaY < 0) ? 'down' : 'up';
     }
 
-    _moveToBoundingTile(direction);
+    _moveToBoundingSpace(direction);
   };
 
   var _keyNavigation = function() {
@@ -163,7 +163,7 @@ var Mosaic = (function(config) {
 
     // r-39, d-40, l-37, u-38
     direction = (direction > 38) ? ((direction == 39) ? 'right' : 'down' ): ((direction == 37) ? 'left' : 'up');
-    _moveToBoundingTile(direction);
+    _moveToBoundingSpace(direction);
   };
 
   // Handle touch gestures: http://www.javascriptkit.com/javatutors/touchevents2.shtml
@@ -213,7 +213,7 @@ var Mosaic = (function(config) {
     window.addEventListener('keydown', _keyNavigation);
     window.addEventListener('resize', _resetLayout);
     _swipedetect(_wrapper, function(direction) {
-      _moveToBoundingTile(direction);
+      _moveToBoundingSpace(direction);
     });
   };
 
@@ -221,7 +221,7 @@ var Mosaic = (function(config) {
     var unitWidth = 20;
     var unitHeigth = 10;
     var mapWrapper = document.createElement('div');
-    var start = document.querySelector(_initialTile);
+    var start = document.querySelector(_initialSpace);
     var ul;
     var li;
 
@@ -265,22 +265,22 @@ var Mosaic = (function(config) {
   var _init = function(config) {
     var c = config || {},
 
-    _tileWrapper = c.tileWrapper || '#mosaic';
+    _spaceWrapper = c.spaceWrapper || '#spaces';
     _columnSelector = c.columnSelector || '[data-column]';
-    _initialTile = c.initialTile || '[data-x="0"][data-y="0"]';
+    _initialSpace = c.initialSpace || '[data-x="0"][data-y="0"]';
     _showMap = c.showMap || false;
-    _wrapper = document.querySelector(_tileWrapper);
+    _wrapper = document.querySelector(_spaceWrapper);
 
     _setLayout();
     if (_showMap) _buildMap();
-    _setInitialTile();
+    _setInitialSpace();
     _initEvents();
   };
 
   var _move = function(direction) {
     var directions = ['up', 'down', 'left', 'right'];
     if (directions.indexOf(direction) > -1) {
-      _moveToBoundingTile(direction);
+      _moveToBoundingSpace(direction);
     }
   };
 
@@ -289,7 +289,7 @@ var Mosaic = (function(config) {
         elX = el.dataset.x,
         elY = el.dataset.y;
 
-    _moveToTile(elX, elY);
+    _moveToSpace(elX, elY);
   };
 
   return {
