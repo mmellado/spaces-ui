@@ -28,14 +28,14 @@
   </nav>
   <div id="spaces">
     <ul data-column>
-      <li id="omg-home">OMG 1 <a href="#" class="right">RIGHT</a></li>
-      <li>OMG 2</li>
+      <li id="omg-home" data-route="/spaces-ui/demos/demo.html">OMG 1 <a href="#" class="right">RIGHT</a></li>
+      <li data-route="/spaces-ui/demos/demo.html/omg2">OMG 2</li>
     </ul>
 
     <ul data-column>
-      <li id="wtf-home">WTF 1 <button class="down">DOWN</button> <button class="left">LEFT</button></li>
-      <li>WTF 2 <button class="up">UP</button></li>
-      <li>WTF 3 <button class="top">TOP</button></li>
+      <li id="wtf-home" data-route="/wtf">WTF 1 <button class="down">DOWN</button> <button class="left">LEFT</button></li>
+      <li data-route="/wtf/2">WTF 2 <button class="up">UP</button></li>
+      <li data-route="/wtf/3">WTF 3 <button class="top">TOP</button></li>
     </ul>
 
     <ul data-column>
@@ -53,7 +53,7 @@
 
 <script src="../src/spaces-ui.js"></script>
 <script>
-  Spaces.init({showMap: true});
+  Spaces.init({showMap: true, useRouter: true});
   var mySpaces = document.querySelectorAll('#spaces ul li');
   for (var i = 0; i < mySpaces.length; i++) {
     mySpaces[i].style.background = '#' + Math.floor(Math.random()*16777215).toString(16); // Setting the random color on your div element.

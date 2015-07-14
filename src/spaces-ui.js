@@ -1,5 +1,5 @@
 // TODO: unit tests
-// TODO: grunt jshint, tests, license banner,
+// TODO: grunt tests
 // TODO: Write README docs
 
 /**
@@ -298,7 +298,7 @@ var Spaces = (function(config) {
     if (x && y) {
       _moveToSpace(x, y);
     }
-  }
+  };
 
   /**
    * _initEvents
