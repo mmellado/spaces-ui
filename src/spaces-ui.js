@@ -1,6 +1,5 @@
 // TODO: unit tests
 // TODO: grunt tests
-// TODO: Write README docs
 
 /**
  * Layout generator replicating OsX spaces for your website
@@ -325,7 +324,6 @@ var Spaces = (function(config) {
    * @constructor
    * @param {Object} config - Config object with details on the desired behavior for the framework.
    * @param {string} config.spaceWrapper - CSS selector for the spaces wrapper. Defaults to #spaces.
-   * @param {string} config.columnSelector - CSS selector for columns. Defaults to elements having the data-column attribute.
    * @param {string} config.initialSpace - CSS selector for the initial space Defaults to the top left space.
    * @param {Boolean} config.showMap - Enables the display of a minimap. Defaults to false.
    */
@@ -333,9 +331,10 @@ var Spaces = (function(config) {
     var c = config || {},
 
     _spaceWrapper = c.spaceWrapper || '#spaces';
-    _columnSelector = c.columnSelector || '[data-column]';
     _initialSpace = c.initialSpace || '[data-x="0"][data-y="0"]';
     _showMap = c.showMap || false;
+
+    _columnSelector = _spaceWrapper + '> *';
     _wrapper = document.querySelector(_spaceWrapper);
 
     _setLayout();
@@ -346,7 +345,7 @@ var Spaces = (function(config) {
 
   /**
    * _move
-   * Allows user to move to a space based on a direction.
+   * Moves to a space relative to the currently active space based on an indicated direction.
    * @param {string} direction - Direction to move to relative to the current active space.
    *                             up - Moves to the space above if available.
    *                             down - Moves to the space below if available.
@@ -366,7 +365,7 @@ var Spaces = (function(config) {
 
   /**
    * _moveTo
-   * Allows user to move to a space based on a css Selector
+   * Moves to a space based on a css Selector
    * @param {string} element - CSS selector for the desired space.
    */
   var _moveTo = function(element) {
