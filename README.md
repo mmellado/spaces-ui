@@ -108,7 +108,7 @@ Enables the display of a minimap. The minimap is displayed on the bottom right p
 
 Moves to a space relative to the currently active space based on an indicated direction.
 
-`direction`
+@param: `direction`
 
 Type: `String`
 
@@ -179,7 +179,7 @@ Direction to move to relative to the current active space.
 
 Moves to a space based on a css Selector.
 
-`selector`
+@param: `selector`
 
 Type: `String`
 
