@@ -14,14 +14,20 @@ module.exports = function(grunt) {
         src: 'src/<%= pkg.name %>.js',
         dest: 'dist/<%= pkg.name %>.min.js'
       }
+    },
+    venus: {
+      tests: [
+        'test/spec/spaces-ui.spec.js'
+      ]
     }
   });
 
   // Load tasks
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-venus');
 
   // Default task(s).
-  grunt.registerTask('default', ['jshint','uglify']);
+  grunt.registerTask('default', ['jshint', 'venus', 'uglify']);
 
 };
