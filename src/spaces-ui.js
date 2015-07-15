@@ -6,7 +6,7 @@
  */
 var Spaces = (function(config) {
   // Config Variables
-  var _spaceWrapper,
+  var _spacesWrapper,
       _columnSelector,
       _initialSpace,
       _showMap,
@@ -323,19 +323,19 @@ var Spaces = (function(config) {
    * Creates an instance of Spaces ui.
    * @constructor
    * @param {Object} config - Config object with details on the desired behavior for the framework.
-   * @param {string} config.spaceWrapper - CSS selector for the spaces wrapper. Defaults to #spaces.
+   * @param {string} config.spacesWrapper - CSS selector for the spaces wrapper. Defaults to #spaces.
    * @param {string} config.initialSpace - CSS selector for the initial space Defaults to the top left space.
    * @param {Boolean} config.showMap - Enables the display of a minimap. Defaults to false.
    */
   var _init = function(config) {
     var c = config || {},
 
-    _spaceWrapper = c.spaceWrapper || '#spaces';
+    _spacesWrapper = c.spacesWrapper || '#spaces';
     _initialSpace = c.initialSpace || '[data-x="0"][data-y="0"]';
     _showMap = c.showMap || false;
 
-    _columnSelector = _spaceWrapper + '> *';
-    _wrapper = document.querySelector(_spaceWrapper);
+    _columnSelector = _spacesWrapper + '> *';
+    _wrapper = document.querySelector(_spacesWrapper);
 
     _setLayout();
     if (_showMap) _buildMap();
