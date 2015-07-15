@@ -33,7 +33,7 @@ Spaces disables scroll on your site. You can navigate your spaces using the arro
 
 ## Options
 
-### spaceWrapper
+### spacesWrapper
 
 Type: `String`
 
@@ -53,7 +53,7 @@ CSS selector for the spaces wrapper.
     .
     .
     <script src="dist/spaces-ui.min.js"></script>
-    <script>Spaces.init({spaceWrapper: '.myCustomWrapper'});</script>
+    <script>Spaces.init({spacesWrapper: '.myCustomWrapper'});</script>
 ```
 
 ### initialSpace
