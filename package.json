@@ -1,6 +1,6 @@
 {
   "name": "spaces-ui",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Layout generator replicating OsX spaces for your website",
   "author": "Marcos Mellado <marcos@mellados.com>",
   "repository": {
