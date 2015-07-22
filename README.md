@@ -2,7 +2,7 @@
 
 Spaces UI is a layout generator replicating OsX spaces for your website.
 
-Watch the [demo](http://www.mellados.com/spaces-ui/demo)
+Watch the [demo](http://www.mellados.com/labs/spaces-ui/demo)
 
 Spaces is super easy to use and dependency free. It provides a lot of flexibility to give your website a cool look and feel. The only requirements are a basic markup structure and to initialize the script.
 
